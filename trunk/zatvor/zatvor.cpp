@@ -6,7 +6,7 @@
 #include "but.h"
 #include "drive.h"
 #include "adc.h"
-#include "NetDriver_rs4850.h"
+#include "network.h"
 #include "main.h"
 
 int moveCh;
@@ -64,7 +64,7 @@ int main(void){
  InitSensors();
  DriveInit();
 #ifndef BUTTONS
- rs485_InitNetwork();
+ Network::init();
  DDRD|=0x60;
 #else
  SetLamp(0,1);
@@ -165,9 +165,6 @@ void delayFunc(void){
 void delay(int n){
  f_delay=1;mdelay=n;while (f_delay){asm("wdr");};
 }
-
-
-
 
 
 
