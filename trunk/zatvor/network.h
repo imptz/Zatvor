@@ -12,6 +12,7 @@ private:
 	static const unsigned int SRC_ADDRESS_OFFSET = 1;
 	static const unsigned int COMMAND_OFFSET = 2;
 	static const unsigned int PARAMS_COUNT_OFFSET = 3;
+	static const unsigned int ZATVOR_NUMBER_OFFSET = 4;
 	
 	static unsigned char sendBuffer[BUFFER_SIZE];
 	static unsigned int sendBufferPos;
@@ -37,6 +38,7 @@ private:
 	static bool testRecv();
 	static bool testParamsCount();
 	static void processCommand();
+	static int zatvorNumber;
 		
 public:
 	static void init();
@@ -47,6 +49,7 @@ public:
 
 	static void recv();
 	static void receiverSyncTimer();
+	static bool klapanOpen;
 };
 
 #endif

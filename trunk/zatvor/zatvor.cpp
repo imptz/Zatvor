@@ -23,14 +23,19 @@ char outsState;
 
 char b0, b1,b2;
 
-
 #ifndef BUTTONS
 void SetOuts(unsigned char value){
  DDRD|=0x60;
  if ((value&0x01) == 0x01){
+	 
+	 Network::klapanOpen = true;
+
    PORTD|=0x40;outsState|=0x40;
    PORTD|=0x20;//outsState|=0x80;
  }else{
+ 
+ Network::klapanOpen = false;
+	 
    PORTD&=0xbf;outsState&=0xbf;
    PORTD&=0xdf;//outsState&=0x7f;
  }

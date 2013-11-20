@@ -57,6 +57,9 @@ int Network::syncCounter;
 
 unsigned char Network::address;
 
+int Network::zatvorNumber;
+bool Network::klapanOpen;
+
 void networkTimerFunc(){
 //	debugOutTimer();
 	Network::receiverSyncTimer();
@@ -103,6 +106,11 @@ unsigned char Network::getAddress(){
 
 unsigned char testAddress;
 void Network::init(){
+	klapanOpen = false;
+	zatvorNumber = 0;
+#ifdef ZATVOR_2
+	zatvorNumber = 1;
+#endif	
 	portInit();
 	
 	address = getAddress();
@@ -295,20 +303,50 @@ void Network::processCommand(){
 	
 	switch (recvBuffer[COMMAND_OFFSET]){
 		case 9:
+#ifdef ZATVOR_OLD		
 			zatvorOpen();
 			setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 9);
+			startSend();
+#else
+			if (zatvorNumber == recvBuffer[ZATVOR_NUMBER_OFFSET]){
+				zatvorOpen();
+				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 9);
+				startSend();
+			}
+#endif			
 			break;
 		case 10:
+#ifdef ZATVOR_OLD
 			zatvorClose();
 			setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 10);
+			startSend();
+#else
+			if (zatvorNumber == recvBuffer[ZATVOR_NUMBER_OFFSET]){
+				zatvorClose();
+				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 10);
+				startSend();
+			}
+#endif		
 			break;
 		case 11:
+#ifdef ZATVOR_OLD
 			zatvorStop();
 			setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 11);
+			startSend();
+#else
+			if (zatvorNumber == recvBuffer[ZATVOR_NUMBER_OFFSET]){
+				zatvorStop();
+				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 11);
+				startSend();
+			}
+#endif			
 			break;
 		case 159:
+#ifndef ZATVOR_2
 			SetOuts(recvBuffer[PARAMS_COUNT_OFFSET + 1]);
 			setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 1, 159);
+			startSend();
+#endif			
 			break;
 		case 158:
 			temp = 0;
@@ -337,11 +375,17 @@ void Network::processCommand(){
 				temp1 = 0;
 			}
 			
-			temp |= outsState;
-			setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 3, 158, temp, temp1);
-
+			if(klapanOpen)
+				temp |= 0x40;
+#ifndef ZATVOR_OLD				
+				if (zatvorNumber == recvBuffer[ZATVOR_NUMBER_OFFSET]){
+					setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 4, 158, temp, temp1, zatvorNumber);
+					startSend();
+				}					
+#else
+				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 3, 158, temp, temp1);
+				startSend();
+#endif			
 			break;
 	}
-	
-	startSend();
 }

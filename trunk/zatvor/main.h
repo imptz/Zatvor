@@ -1,5 +1,6 @@
 //#define BUTTONS 
-
+//#define ZATVOR_OLD
+#define ZATVOR_2
 
 void SetAvarIndication(char state);
 void SetWorkIndication(char state);
