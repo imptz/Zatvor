@@ -16,5 +16,8 @@ enum SENSOR_READY
  SENSOR_READY_TRUE = 0,  
  SENSOR_READY_FALSE = 1
 };
+
 enum SENSOR_READY getSensorReady(void);
+
+unsigned char getButtonLine(void);
 

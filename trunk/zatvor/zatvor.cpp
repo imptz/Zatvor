@@ -23,6 +23,9 @@ char outsState;
 
 char b0, b1,b2;
 
+int stopTimer;
+int storTimerD;
+
 #ifndef BUTTONS
 void SetOuts(unsigned char value){
  DDRD|=0x60;
@@ -58,6 +61,9 @@ int main(void){
 
  moveCh = 0;
  outsState = 0;
+ 
+ stopTimer = -1;
+ storTimerD = 0;
  
  InitVirtualTimers();
  initDelay();
@@ -102,14 +108,31 @@ int main(void){
 }
 
 void Process(void){
+  if(storTimerD > 0){
+	storTimerD--;
+  }else{
+	storTimerD = 1000;	
+	if(stopTimer > 0)
+		stopTimer--;
+  }
+  	
   enum SENSOR_STATE state = getSensorState();
-  if ((state == SENSOR_STATE_FAULT) || (state == SENSOR_STATE_UNDEFINED))
+  if ((state == SENSOR_STATE_FAULT) || (state == SENSOR_STATE_UNDEFINED)){
+	stopTimer = -1;
 	zatvorStop();
+  }	
   
-  if ((driveDirect == 1) && (state == SENSOR_STATE_OPEN))
+  if ((((driveDirect == 1) && (state == SENSOR_STATE_OPEN))) || (stopTimer == 0))
+  {
+	stopTimer = -1;
 	zatvorStop();
-  if ((driveDirect == 2) && (state == SENSOR_STATE_CLOSE))
+  }
+  	
+  if ((((driveDirect == 2) && (state == SENSOR_STATE_CLOSE))) || (stopTimer == 0)){
+	stopTimer = -1;
 	zatvorStop();
+  }
+  	
   if (moveCh != 0){
 	if (driveDirect == 0){
 		DriveMove(moveCh);

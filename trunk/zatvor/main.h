@@ -1,6 +1,6 @@
 //#define BUTTONS 
 //#define ZATVOR_OLD
-#define ZATVOR_2
+//#define ZATVOR_2
 
 void SetAvarIndication(char state);
 void SetWorkIndication(char state);
@@ -25,3 +25,5 @@ extern char outsState;
 void zatvorOpen();
 void zatvorClose();
 void zatvorStop();
+
+extern int stopTimer;

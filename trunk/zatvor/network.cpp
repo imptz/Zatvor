@@ -61,7 +61,7 @@ int Network::zatvorNumber;
 bool Network::klapanOpen;
 
 void networkTimerFunc(){
-//	debugOutTimer();
+	//debugOutTimer();
 	Network::receiverSyncTimer();
 }
 
@@ -379,11 +379,11 @@ void Network::processCommand(){
 				temp |= 0x40;
 #ifndef ZATVOR_OLD				
 				if (zatvorNumber == recvBuffer[ZATVOR_NUMBER_OFFSET]){
-					setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 4, 158, temp, temp1, zatvorNumber);
+					setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 5, 158, temp, temp1, zatvorNumber, getButtonLine());
 					startSend();
 				}					
 #else
-				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 3, 158, temp, temp1);
+				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 5, 158, temp, temp1, 0, getButtonLine());
 				startSend();
 #endif			
 			break;

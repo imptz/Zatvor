@@ -20,6 +20,10 @@ unsigned char f_invalideVoltage;
 unsigned int invalideVSensTimer;
 #define const_InvalideVSensTimer 300
 
+unsigned char getButtonLine(void){
+	return (PINC & (1 << 2)) >> 2; 
+}
+
 enum SENSOR_STATE getSensorState()
 {
  return sensorState; 

@@ -40,6 +40,7 @@ unsigned char driveStartCounter;
 void TestMaxCurrent(char,unsigned int);
 void CalculateVoltage(unsigned int);
 
+const int STOP_TIMER_INIT = 60;
 
 void DriveInit(void){
 	DDRD|=0x80;DDRB|=0x07;PORTD&=0x7f;PORTB&=0xf8;
@@ -63,12 +64,12 @@ void DriveInit(void){
 
 unsigned char DriveMove(unsigned char p){
 	// 2 - close, 1 - open
-	switch (p)
-	{
+	switch(p){
 		case 0:
-			if ((driveDirect!=1)&&(driveDirect!=2)) {return 0;}
+			if ((driveDirect != 1) && (driveDirect != 2)){return 0;}
 			else if (driveDirect==0) {return 1;}
 			{
+				stopTimer = -1;
 				drivePhase=1;
 				driveDirect=const_driveStopCounter;
 				return 1;
@@ -78,6 +79,7 @@ unsigned char DriveMove(unsigned char p){
 	if ((driveDirect!=0)&&(driveDirect!=1)) {return 0;}
 	else if (driveDirect==1) {return 1;}
 	{
+		stopTimer = STOP_TIMER_INIT;
 		drivePhase=4;
 		driveDirect=1;
 		bridge_start_1_0;
@@ -89,6 +91,7 @@ unsigned char DriveMove(unsigned char p){
 	if ((driveDirect!=0)&&(driveDirect!=2)) {return 0;}
 	else if (driveDirect==2) {return 1;}
 	{
+		stopTimer = STOP_TIMER_INIT;
 		drivePhase=5;
 		driveDirect=2;
 		bridge_start_2_0;
