@@ -383,7 +383,8 @@ void Network::processCommand(){
 					startSend();
 				}					
 #else
-				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 5, 158, temp, temp1, 0, getButtonLine());
+//				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 5, 158, temp, temp1, 0, getButtonLine());
+				setSendFrame(recvBuffer[SRC_ADDRESS_OFFSET], address, 120, 4, 158, temp, temp1, 0);
 				startSend();
 #endif			
 			break;
